@@ -23,7 +23,7 @@
 @media (prefers-color-scheme:dark){
   :root{
     --bg:#101418; --surface:#181e24; --ink:#eef2f5; --muted:#9aa7b2; --line:#29323b; --track:#37424d;
-    --in:#3ddc97; --in-soft:#12332a; --out:#ff9a52; --out-soft:#3b2414; --danger:#ff8a80;
+    --in:#2fb67f; --in-soft:#12332a; --out:#f08a45; --out-soft:#3b2414; --danger:#ff8a80;
     --cam:#000; --shadow:none;
   }
 }
@@ -54,7 +54,6 @@ svg.i.solid{fill:currentColor; stroke:none}
 .brand{display:flex; align-items:center; gap:12px; min-width:0}
 .logo{flex:none; width:42px; height:42px; border-radius:13px; display:grid; place-items:center; background:var(--accent); color:#fff}
 .brand h1{font-size:1.3rem; line-height:1.15; font-weight:800}
-.brand p{font-size:.82rem; color:var(--muted)}
 .icon-btn{width:48px; height:48px; border-radius:14px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center}
 .screens{display:block}
 .screen{display:grid; gap:14px; align-content:start}
@@ -95,30 +94,21 @@ svg.i.solid{fill:currentColor; stroke:none}
 /* ---------- escanear ---------- */
 .mode{display:grid; grid-template-columns:1fr 1fr; gap:10px}
 .mode button{
-  min-height:64px; padding:8px 10px; border-radius:16px; border:2px solid var(--line); background:var(--surface);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  min-height:56px; padding:8px 10px; border-radius:16px; border:2px solid var(--line); background:var(--surface);
+  font-size:1.1rem; font-weight:800; color:var(--muted);
 }
-.mode b{font-size:1.1rem}
-.mode small{font-size:.8rem; color:var(--muted)}
 .mode button[aria-pressed=true]{color:#fff}
-.mode button[aria-pressed=true] small{color:rgba(255,255,255,.88)}
 .mode button[data-mode=in][aria-pressed=true]{background:var(--in); border-color:var(--in)}
 .mode button[data-mode=out][aria-pressed=true]{background:var(--out); border-color:var(--out)}
-@media (prefers-color-scheme:dark){ .mode button[aria-pressed=true]{color:#07110d} .mode button[aria-pressed=true] small{color:rgba(0,0,0,.7)} }
-
-.tips{background:var(--accent-soft); border-radius:var(--r); padding:14px 16px; display:grid; gap:8px}
-.tips h2{font-size:1rem}
-.tips ol{margin:0; padding-left:22px; font-size:.95rem}
-.tips li{margin:2px 0}
-.tips .btn{min-height:44px; justify-self:start}
+@media (prefers-color-scheme:dark){ .mode button[aria-pressed=true]{color:#04140d} }
 
 .viewfinder{
-  position:relative; aspect-ratio:1/1; width:100%; max-height:75vh; margin:0 auto; background:var(--cam);
+  position:relative; aspect-ratio:1/1; width:100%; margin:0 auto; background:var(--cam);
   border-radius:24px; overflow:hidden; --mark:rgba(255,255,255,.85);
 }
 .viewfinder video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
 .viewfinder video.mirror{transform:scaleX(-1)}
-.frame i{position:absolute; width:40px; height:40px; border:4px solid var(--mark); transition:border-color .2s}
+.frame i{position:absolute; width:34px; height:34px; border:3px solid var(--mark); opacity:.8; transition:border-color .2s}
 .frame i:nth-child(1){top:16px; left:16px; border-right:0; border-bottom:0; border-top-left-radius:14px}
 .frame i:nth-child(2){top:16px; right:16px; border-left:0; border-bottom:0; border-top-right-radius:14px}
 .frame i:nth-child(3){bottom:16px; left:16px; border-right:0; border-top:0; border-bottom-left-radius:14px}
@@ -133,26 +123,30 @@ body[data-mode=out] .viewfinder[data-state=counted]{--mark:#ffb27a}
   padding:28px; text-align:center; color:#e8edf1; background:rgba(11,14,18,.88);
 }
 .vf-start p{font-size:1.05rem; max-width:20em}
+.vf-start .vf-hint{font-size:.92rem; opacity:.78}
 .vf-start .btn{min-width:220px; min-height:58px; font-size:1.1rem}
 .spinner{width:44px; height:44px; border-radius:50%; border:5px solid rgba(255,255,255,.2); border-top-color:#fff; animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-.vf-tools{position:absolute; top:14px; left:50%; transform:translateX(-50%); z-index:3; display:flex; gap:12px}
-.round{width:48px; height:48px; border-radius:50%; border:0; background:rgba(0,0,0,.55); color:#fff; display:grid; place-items:center; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)}
-.round[aria-pressed=true]{background:#fff; color:#111}
-
-.vf-status{
-  position:absolute; left:20px; right:20px; bottom:20px; z-index:3; padding:12px 16px; border-radius:18px;
-  background:rgba(0,0,0,.66); color:#fff; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); text-align:center;
-}
-.vf-line{display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; font-size:1.2rem; min-width:0}
-.vf-line span:last-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .dot{flex:none; width:14px; height:14px; border-radius:50%; background:var(--c,#9aa7b2)}
-.vf-sub{font-size:.9rem; opacity:.9; margin-top:2px}
-.vf-bar{height:6px; border-radius:3px; background:rgba(255,255,255,.25); margin-top:10px; overflow:hidden}
-.vf-bar div{height:100%; width:0; background:#ffd24a}
-.viewfinder[data-state=counted] .vf-bar div{background:#4ade80}
-body[data-mode=out] .viewfinder[data-state=counted] .vf-bar div{background:#ffb27a}
+.round{
+  flex:none; width:52px; height:52px; padding:0; border-radius:50%; border:2px solid var(--line); background:var(--bg); color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+}
+.round[aria-pressed=true]{background:var(--accent); border-color:var(--accent); color:#fff}
+
+.status{
+  background:var(--surface); border-radius:var(--r); padding:12px 12px 0 16px; box-shadow:var(--shadow); overflow:hidden;
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; column-gap:12px;
+}
+.st-main{min-width:0}
+.st-line{display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.15rem; min-width:0}
+.st-line span:last-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.st-sub{color:var(--muted); font-size:.92rem}
+.status .round{margin-bottom:4px}
+.st-bar{grid-column:1 / -1; height:6px; margin:10px -12px 0 -16px; background:var(--track)}
+.st-bar div{height:100%; width:0; background:#e0a800}
+.status[data-state=counted] .st-bar div{background:var(--accent)}
 
 .flash{position:absolute; inset:0; z-index:4; border:6px solid var(--in); border-radius:24px; opacity:0; pointer-events:none}
 .flash.out{border-color:var(--out)}
@@ -175,14 +169,13 @@ body[data-mode=out] .viewfinder[data-state=counted] .vf-bar div{background:#ffb2
 .tiles{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px}
 .tile{
   background:var(--surface); border-radius:16px; padding:12px 10px 10px; text-align:center; border:2px solid transparent;
-  border-top:6px solid var(--c); box-shadow:var(--shadow); min-width:0;
+  border-top:4px solid var(--c); box-shadow:var(--shadow); min-width:0;
 }
-.tile .n{display:block; font-size:2.2rem; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums}
+.tile .n{display:block; font-size:2rem; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums}
 .tile .name{display:block; font-size:.86rem; color:var(--muted); font-weight:600; line-height:1.2; margin-top:2px; overflow-wrap:break-word}
 .tile.active{border-color:var(--c); border-top-color:var(--c)}
 .tile.pulse{animation:pulse 1s ease-out}
 @keyframes pulse{0%{background:var(--accent-soft); transform:scale(1.04)} 100%{background:var(--surface); transform:scale(1)}}
-.hint{font-size:.92rem; color:var(--muted); text-align:center}
 
 .tech{background:var(--surface); border-radius:var(--r); padding:14px 16px}
 .tech h3{font-size:.95rem; margin-bottom:8px}
@@ -268,6 +261,10 @@ dialog .sub{color:var(--muted); font-size:.95rem; margin-bottom:14px}
 .sens{display:grid; gap:8px; padding:12px 0; border-top:1px solid var(--line)}
 .sens label{font-weight:700}
 .sens small{color:var(--muted); font-size:.85rem}
+.camset{display:grid; gap:8px; padding:12px 0; border-top:1px solid var(--line)}
+.camset label{font-weight:700}
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.duo .btn{min-height:48px; padding:8px 10px; font-size:.95rem}
 details.adv{border-top:1px solid var(--line); padding:6px 0 0}
 details.adv summary{min-height:52px; display:flex; align-items:center; font-weight:700; cursor:pointer}
 .field{display:grid; gap:6px; margin:8px 0 12px}
@@ -296,7 +293,6 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
       </div>
       <div>
         <h1>Inventario</h1>
-        <p>Cuenta tus productos con la cámara</p>
       </div>
     </div>
     <button id="btnSettings" class="icon-btn" type="button" aria-label="Ajustes">
@@ -307,19 +303,9 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
   <main class="screens">
     <!-- ============ ESCANEAR ============ -->
     <section class="screen" id="scanScreen" aria-label="Escanear">
-      <div class="tips" id="tips" hidden>
-        <h2>Así se usa</h2>
-        <ol>
-          <li>Toca <b>Activar cámara</b>.</li>
-          <li>Muestra <b>un producto a la vez</b>, de frente.</li>
-          <li>Cuando suene, <b>retíralo</b> y muestra el siguiente.</li>
-        </ol>
-        <button class="btn" id="btnTips" type="button">Entendido</button>
-      </div>
-
       <div class="mode" role="group" aria-label="¿Qué estás haciendo?">
-        <button type="button" data-mode="in" aria-pressed="true"><b>Entrada</b><small>Suma al inventario</small></button>
-        <button type="button" data-mode="out" aria-pressed="false"><b>Salida</b><small>Resta del inventario</small></button>
+        <button type="button" data-mode="in" aria-pressed="true"><b>+ Entrada</b></button>
+        <button type="button" data-mode="out" aria-pressed="false"><b>− Salida</b></button>
       </div>
 
       <div class="viewfinder" id="vf" data-state="off">
@@ -330,34 +316,28 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
           <div class="spinner" id="vfSpin" hidden></div>
           <svg class="i" id="vfIcon" viewBox="0 0 24 24" width="44" height="44" style="width:44px;height:44px"><path d="M14.5 4h-5L8 6H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3.5"/></svg>
           <p id="vfMsg">Preparando…</p>
+          <p class="vf-hint" id="vfHint" hidden></p>
           <button class="btn primary" id="btnStart" type="button" hidden>Activar cámara</button>
-        </div>
-
-        <div class="vf-tools" id="vfTools" hidden>
-          <button class="round" id="btnPause" type="button" aria-pressed="false" aria-label="Pausar el conteo" title="Pausar">
-            <svg class="i solid" id="icPause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-            <svg class="i solid" id="icPlay" viewBox="0 0 24 24" hidden><path d="M8 5v14l11-7z"/></svg>
-          </button>
-          <button class="round" id="btnFlip" type="button" aria-label="Cambiar de cámara" title="Cambiar de cámara" hidden>
-            <svg class="i" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
-          </button>
-          <button class="round" id="btnStop" type="button" aria-label="Apagar la cámara" title="Apagar la cámara">
-            <svg class="i" viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg>
-          </button>
         </div>
 
         <div class="flash" id="flash"></div>
         <div class="pop" id="pop"></div>
 
-        <div class="vf-status" id="vfStatus" hidden>
-          <div class="vf-line"><span class="dot" id="vfDot" hidden></span><span id="vfText" aria-live="polite"></span></div>
-          <div class="vf-sub" id="vfSub"></div>
-          <div class="vf-bar"><div id="vfBar"></div></div>
+      </div>
+
+      <div class="status" id="vfStatus" data-state="off" hidden>
+        <div class="st-main">
+          <div class="st-line"><span class="dot" id="vfDot" hidden></span><span id="vfText" aria-live="polite"></span></div>
+          <div class="st-sub" id="vfSub"></div>
         </div>
+        <button class="round" id="btnPause" type="button" aria-pressed="false" aria-label="Pausar el conteo" title="Pausar">
+          <svg class="i solid" id="icPause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+          <svg class="i solid" id="icPlay" viewBox="0 0 24 24" hidden><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="st-bar"><div id="vfBar"></div></div>
       </div>
 
       <ul class="tiles" id="tiles" aria-label="Cantidades"></ul>
-      <p class="hint">Un producto a la vez. Retíralo antes de mostrar el siguiente.</p>
 
       <section class="tech" id="tech" hidden>
         <h3>Detalles técnicos</h3>
@@ -424,6 +404,14 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
       <button type="button" data-sens="safe" aria-pressed="false">Segura</button>
     </div>
     <small id="sensHelp">Si se salta productos, prueba «Rápida». Si cuenta de más, prueba «Segura».</small>
+  </div>
+
+  <div class="camset" id="camSet" hidden>
+    <label>Cámara</label>
+    <div class="duo">
+      <button class="btn" type="button" id="btnFlip">Cambiar de cámara</button>
+      <button class="btn" type="button" id="btnStop">Apagar cámara</button>
+    </div>
   </div>
 
   <details class="adv">
@@ -770,21 +758,22 @@ function exportLog() {
  * Estado del visor
  * ------------------------------------------------------------------ */
 let startAction = null;
-function showStart({ text, button = '', onClick = null, busy = false }) {
+function showStart({ text, hint = '', button = '', onClick = null, busy = false }) {
   $('#vfStart').hidden = false;
   $('#vfSpin').hidden = !busy; $('#vfIcon').hidden = busy;
   $('#vfMsg').textContent = text;
+  $('#vfHint').textContent = hint; $('#vfHint').hidden = !hint;
   const b = $('#btnStart'); b.hidden = !button; b.textContent = button;
   startAction = onClick;
-  $('#vfTools').hidden = true; $('#vfStatus').hidden = true;
+  $('#vfStatus').hidden = true; $('#camSet').hidden = true;
   $('#vf').dataset.state = 'off';
 }
 
 function renderStatus(r) {
-  const vf = $('#vf');
-  vf.dataset.state = r.state;
+  S.lastStatus = r;
+  $('#vf').dataset.state = r.state; $('#vfStatus').dataset.state = r.state;
   const out = S.cfg.mode === 'out';
-  let text = 'Muestra un producto', sub = 'Uno a la vez, de frente a la cámara', color = '';
+  let text = 'Muestra un producto', sub = out ? 'Se resta del inventario' : 'Se suma al inventario', color = '';
   if (r.label) color = colorFor(r.label, products().indexOf(r.label));
   if (r.state === 'detecting') { text = r.label; sub = 'Mantenlo quieto un momento…'; }
   else if (r.state === 'counted') { text = '✓ ' + r.label; sub = `${out ? 'Se restó' : 'Se sumó'} 1 · Retíralo para el siguiente`; }
@@ -874,7 +863,7 @@ async function startCamera() {
 
     S.running = true; S.paused = false; setPaused(false);
     engine.reset();
-    $('#vfStart').hidden = true; $('#vfTools').hidden = false; $('#vfStatus').hidden = false;
+    $('#vfStart').hidden = true; $('#vfStatus').hidden = false; $('#camSet').hidden = false;
     renderStatus({ state: 'idle', label: null, progress: 0 });
     lockScreen();
     loop();
@@ -892,7 +881,7 @@ function stopCamera(silent) {
   video.srcObject = null;
   if (S.wake) { S.wake.release().catch(() => {}); S.wake = null; }
   engine.reset();
-  if (!silent && S.model) showStart({ text: 'Cámara apagada', button: 'Activar cámara', onClick: startCamera });
+  if (!silent && S.model) showStart({ text: 'Cámara apagada', hint: READY_HINT, button: 'Activar cámara', onClick: startCamera });
 }
 
 function setPaused(p) {
@@ -915,6 +904,7 @@ async function lockScreen() {
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden && S.running) lockScreen(); });
 
+const READY_HINT = 'Muestra un producto a la vez y retíralo antes del siguiente.';
 const PRED_EVERY = 80;
 function loop() {
   if (!S.running) return;
@@ -960,7 +950,7 @@ async function loadModel(rawUrl) {
     S.model = m; S.url = base;
     $('#modelUrl').value = S.customUrl || '';
     setLabels(m.getClassLabels());
-    showStart({ text: 'Todo listo', button: 'Activar cámara', onClick: startCamera });
+    showStart({ text: 'Todo listo', hint: READY_HINT, button: 'Activar cámara', onClick: startCamera });
     return true;
   } catch (e) {
     console.error(e);
@@ -983,6 +973,7 @@ function setTab(t) {
 function setMode(mode) {
   S.cfg.mode = mode; document.body.dataset.mode = mode;
   document.querySelectorAll('.mode button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  if (S.running && S.lastStatus) renderStatus(S.lastStatus);
   saveStore();
 }
 function setSens(s) {
@@ -997,7 +988,6 @@ function init() {
   setMode(S.cfg.mode); setSens(S.cfg.sens);
   $('#optSound').checked = S.cfg.sound; $('#optVibrate').checked = S.cfg.vibrate; $('#optTech').checked = S.cfg.tech;
   applyTech();
-  $('#tips').hidden = S.tipsSeen;
   renderLog(); updateCounts();
 
   document.querySelectorAll('.mode button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
@@ -1005,11 +995,10 @@ function init() {
   document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setSens(b.dataset.sens)));
   $('#pop').addEventListener('animationend', () => $('#pop').classList.remove('show'));
   $('#flash').addEventListener('animationend', () => $('#flash').classList.remove('on'));
-  $('#btnTips').addEventListener('click', () => { S.tipsSeen = true; $('#tips').hidden = true; saveStore(); });
   $('#btnStart').addEventListener('click', () => startAction && startAction());
-  $('#btnStop').addEventListener('click', () => stopCamera(false));
+  $('#btnStop').addEventListener('click', () => { $('#dlgSettings').close(); stopCamera(false); });
   $('#btnPause').addEventListener('click', () => setPaused(!S.paused));
-  $('#btnFlip').addEventListener('click', () => { S.cfg.facing = S.cfg.facing === 'environment' ? 'user' : 'environment'; saveStore(); startCamera(); });
+  $('#btnFlip').addEventListener('click', () => { $('#dlgSettings').close(); S.cfg.facing = S.cfg.facing === 'environment' ? 'user' : 'environment'; saveStore(); startCamera(); });
   $('#btnSettings').addEventListener('click', () => $('#dlgSettings').showModal());
   $('#snackUndo').addEventListener('click', () => { undoLast(); $('#snack').hidden = true; });
 
