@@ -51,7 +51,7 @@ body{
 }
 h1,h2,h3,p{margin:0}
 h1,h2,h3{font-family:var(--font-display); letter-spacing:-.015em}
-.tile .n,.total-card strong,.stepper input,.st-line,.pop,.badge,.mode button{font-family:var(--font-display)}
+.sz .n,.total-card strong,.stepper input,.st-line,.pop,.badge,.mode button{font-family:var(--font-display)}
 button,input,select{font:inherit; color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--accent); outline-offset:2px}
@@ -181,18 +181,23 @@ body[data-mode=out] .viewfinder[data-state=counted]{--mark:#ffb27a}
 
 .tiles{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(104px,1fr)); gap:10px}
 .tile{
-  background:var(--surface); border-radius:16px; padding:12px 10px 10px; text-align:center; border:2px solid transparent;
-  border-top:4px solid var(--c); box-shadow:var(--shadow); min-width:0;
+  background:var(--surface); border-radius:16px; padding:10px 8px 8px; border-top:4px solid var(--c); box-shadow:var(--shadow); min-width:0;
+  display:grid; gap:4px; align-content:start;
 }
-.tile .n{display:block; font-size:2rem; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums}
-.tile .name{display:block; font-size:.86rem; color:var(--muted); font-weight:600; line-height:1.2; margin-top:2px; overflow-wrap:break-word}
-.tile.active{border-color:var(--c); border-top-color:var(--c)}
-.tile.pulse{animation:pulse 1s ease-out}
+.tile .pname{display:block; padding:0 4px 2px; font-size:.88rem; font-weight:700; line-height:1.2; overflow-wrap:break-word}
+.sz{display:flex; align-items:baseline; justify-content:space-between; gap:6px; padding:4px 6px; border-radius:10px; border:2px solid transparent}
+.sz .n{font-size:1.45rem; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums}
+.sz .s{font-size:.78rem; color:var(--muted); font-weight:700; white-space:nowrap}
+.sz.solo{justify-content:center}
+.sz.solo .n{font-size:2rem}
+.sz.active{border-color:var(--c)}
+.sz.pulse{animation:pulse 1s ease-out}
 @keyframes pulse{0%{background:var(--accent-soft); transform:scale(1.04)} 100%{background:var(--surface); transform:scale(1)}}
 
 .tech{background:var(--surface); border-radius:var(--r); padding:14px 16px}
-.tech h3{font-size:.95rem; margin-bottom:8px}
-.prob{display:grid; grid-template-columns:minmax(70px,32%) 1fr 44px; align-items:center; gap:8px; font-size:.85rem; padding:3px 0}
+.tech h3{font-size:.95rem; margin-bottom:4px}
+.tech-note{font-size:.82rem; color:var(--muted); margin:0 0 10px}
+.prob{display:grid; grid-template-columns:minmax(120px,44%) 1fr 46px; align-items:center; gap:8px; font-size:.85rem; padding:3px 0}
 .prob span:first-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .prob .track{height:8px; border-radius:4px; background:var(--track); overflow:hidden}
 .prob .fill{height:100%; width:0; background:var(--muted); transition:width .45s ease-out}
@@ -288,7 +293,7 @@ details.adv summary{min-height:52px; display:flex; align-items:center; font-weig
 dialog .foot{display:grid; gap:8px; margin-top:14px}
 
 @media (prefers-reduced-motion:reduce){
-  .flash.on,.pop.show,.tile.pulse,.row.pulse,.spinner{animation:none}
+  .flash.on,.pop.show,.sz.pulse,.row.pulse,.spinner{animation:none}
   .prob .fill{transition:none}
 }
 @media (orientation:landscape) and (max-height:520px){
@@ -353,6 +358,7 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
 
       <section class="tech" id="tech" hidden>
         <h3>Detalles técnicos</h3>
+        <p class="tech-note">Qué tan seguro está el sistema de cada opción, de mayor a menor. Si lo más alto es «Ningún producto», no hay nada que contar.</p>
         <div id="probs"></div>
       </section>
     </section>
@@ -550,12 +556,14 @@ class CountEngine {
  * ------------------------------------------------------------------ */
 const $ = (s, r = document) => r.querySelector(s);
 const STORE = 'inventario-ia:v2', OLD_STORE = 'inventario-ia:v1';
-const DEFAULT_MODEL = 'https://teachablemachine.withgoogle.com/models/3ok2iDQGD/';
+const DEFAULT_MODEL = 'https://teachablemachine.withgoogle.com/models/SQ4VqhB2i/';
 // Modelos anteriores: si alguien los tenía guardados, se reemplazan por el actual
-const LEGACY_MODELS = ['-OAMSofUz', 'WT3N3SwBa', '6X92zaJfJ'];
+const LEGACY_MODELS = ['-OAMSofUz', 'WT3N3SwBa', '6X92zaJfJ', '3ok2iDQGD'];
 const isLegacy = u => LEGACY_MODELS.some(id => (u || '').includes(id));
 const BG_RE = /^(fondo|vac[ií]o|vacia|nada|ning[uú]n|sin\s|background|empty|none|nothing|blank)/i;
 const SENS = { fast: { threshold: 75, hold: 500 }, normal: { threshold: 85, hold: 800 }, safe: { threshold: 92, hold: 1100 } };
+const SIZE_RE = /^(.*\S)\s+(\d+(?:[.,]\d+)?\s*(?:ml|cl|l|lt|litros?))$/i;   // «Coca-Cola 600 ml» -> producto + tamaño
+function splitLabel(label) { const m = label.match(SIZE_RE); return m ? { product: m[1], size: m[2] } : { product: label, size: '' }; }
 const PALETTE = ['#2b7de9', '#e8890c', '#e11d2e', '#0ea5a3', '#8b5cf6', '#64748b', '#84cc16'];
 const COLOR_BY_NAME = [[/vital|agua/i, '#2b7de9'], [/aquarius/i, '#e8890c'], [/coca|cola/i, '#e11d2e']];
 
@@ -666,13 +674,23 @@ function showPop(text, kind) {
 function buildLists() {
   const tiles = $('#tiles'), stock = $('#stockList'), probs = $('#probs');
   tiles.replaceChildren(); stock.replaceChildren(); probs.replaceChildren();
+  const groups = new Map();   // una tarjeta por producto, con una fila por tamaño
+  products().forEach((label, i) => {
+    const { product, size } = splitLabel(label);
+    if (!groups.has(product)) groups.set(product, { color: colorFor(product, groups.size), items: [] });
+    groups.get(product).items.push({ label, size });
+  });
+  for (const [product, g] of groups) {
+    const tile = el('li', { class: 'tile', style: `--c:${g.color}` }, el('span', { class: 'pname', text: product }));
+    for (const it of g.items) {
+      const sz = el('div', { class: 'sz' + (it.size ? '' : ' solo'), 'data-label': it.label }, el('span', { class: 'n', text: '0' }), el('span', { class: 's', text: it.size }));
+      sz.addEventListener('animationend', () => sz.classList.remove('pulse'));
+      tile.append(sz);
+    }
+    tiles.append(tile);
+  }
   products().forEach((label, i) => {
     const color = colorFor(label, i);
-    const tile = el('li', { class: 'tile', 'data-label': label, style: `--c:${color}` },
-      el('span', { class: 'n', text: '0' }), el('span', { class: 'name', text: label }));
-    tile.addEventListener('animationend', () => tile.classList.remove('pulse'));
-    tiles.append(tile);
-
     const row = el('li', { class: 'row', 'data-label': label, style: `--c:${color}` },
       el('span', { class: 'dot', 'aria-hidden': 'true' }),
       el('span', { class: 'name', text: label }),
@@ -684,15 +702,15 @@ function buildLists() {
     stock.append(row);
   });
   S.labels.forEach(label => probs.append(el('div', { class: 'prob', 'data-label': label },
-    el('span', { text: label }), el('div', { class: 'track' }, el('div', { class: 'fill' })), el('output', { text: '0%' }))));
+    el('span', { text: label === S.cfg.bg ? 'Ningún producto' : label }), el('div', { class: 'track' }, el('div', { class: 'fill' })), el('output', { text: '0%' }))));
   $('#stockEmpty').hidden = products().length > 0;
   updateCounts();
 }
 
 function updateCounts() {
   let total = 0;
-  for (const li of $('#tiles').children) {
-    const n = S.counts[li.dataset.label] || 0; total += n; $('.n', li).textContent = n;
+  for (const sz of document.querySelectorAll('#tiles .sz')) {
+    const n = S.counts[sz.dataset.label] || 0; total += n; $('.n', sz).textContent = n;
   }
   for (const li of $('#stockList').children) {
     const input = $('input', li);
@@ -714,7 +732,7 @@ function updateShare(total) {
 }
 
 function pulse(label) {
-  for (const li of [...$('#tiles').children, ...$('#stockList').children]) {
+  for (const li of [...document.querySelectorAll('#tiles .sz'), ...$('#stockList').children]) {
     if (li.dataset.label === label) { li.classList.remove('pulse'); void li.offsetWidth; li.classList.add('pulse'); }
   }
 }
@@ -806,7 +824,7 @@ function renderStatus(r) {
   $('#vfText').textContent = text; $('#vfSub').textContent = sub;
   const dot = $('#vfDot'); dot.hidden = !color; dot.style.setProperty('--c', color || '#9aa7b2');
   $('#vfBar').style.width = (r.progress * 100).toFixed(0) + '%';
-  for (const t of $('#tiles').children) t.classList.toggle('active', !!r.label && r.state !== 'paused' && t.dataset.label === r.label);
+  for (const t of document.querySelectorAll('#tiles .sz')) t.classList.toggle('active', !!r.label && r.state !== 'paused' && t.dataset.label === r.label);
 }
 function renderProbs(smooth, best) {
   if (!S.cfg.tech) return;
@@ -817,14 +835,15 @@ function renderProbs(smooth, best) {
   for (const k in smooth) d[k] = (d[k] ?? smooth[k]) + (smooth[k] - (d[k] ?? smooth[k])) * a;
   if (now - (S.dispDraw || 0) < 350) return;       // se redibuja unas 3 veces por segundo
   S.dispDraw = now;
-  let top = null, tp = -1;
-  for (const k in d) if (d[k] > tp) { tp = d[k]; top = k; }
-  for (const row of $('#probs').children) {
-    const p = d[row.dataset.label] || 0;
-    $('.fill', row).style.width = (p * 100).toFixed(0) + '%';
-    $('output', row).textContent = (Math.round(p * 20) * 5) + '%';   // de 5 en 5
-    row.classList.toggle('top', row.dataset.label === top);
-  }
+  const box = $('#probs');
+  const rows = [...box.children].map(r => ({ r, p: d[r.dataset.label] || 0 })).sort((x, y) => y.p - x.p);
+  const fmt = p => p >= 0.995 ? '100%' : p < 0.01 ? (p > 0.0005 ? '<1%' : '0%') : Math.round(p * 100) + '%';
+  rows.forEach(({ r, p }, i) => {
+    $('.fill', r).style.width = (p * 100).toFixed(0) + '%';
+    $('output', r).textContent = fmt(p);
+    r.classList.toggle('top', i === 0 && r.dataset.label !== S.cfg.bg);
+    box.append(r);                                  // se ordenan de mayor a menor
+  });
 }
 
 function onPreds(preds, now) {
