@@ -542,7 +542,10 @@ class CountEngine {
  * ------------------------------------------------------------------ */
 const $ = (s, r = document) => r.querySelector(s);
 const STORE = 'inventario-ia:v2', OLD_STORE = 'inventario-ia:v1';
-const DEFAULT_MODEL = 'https://teachablemachine.withgoogle.com/models/-OAMSofUz/';
+const DEFAULT_MODEL = 'https://teachablemachine.withgoogle.com/models/3ok2iDQGD/';
+// Modelos anteriores: si alguien los tenía guardados, se reemplazan por el actual
+const LEGACY_MODELS = ['-OAMSofUz', 'WT3N3SwBa', '6X92zaJfJ'];
+const isLegacy = u => LEGACY_MODELS.some(id => (u || '').includes(id));
 const BG_RE = /^(fondo|vac[ií]o|vacia|nada|ning[uú]n|sin\s|background|empty|none|nothing|blank)/i;
 const SENS = { fast: { threshold: 75, hold: 500 }, normal: { threshold: 85, hold: 800 }, safe: { threshold: 92, hold: 1100 } };
 const PALETTE = ['#2b7de9', '#e8890c', '#e11d2e', '#0ea5a3', '#8b5cf6', '#64748b', '#84cc16'];
@@ -564,7 +567,7 @@ function loadStore() {
     if (d) {
       Object.assign(S.cfg, d.cfg || {});
       S.counts = d.counts || {}; S.log = Array.isArray(d.log) ? d.log : [];
-      S.customUrl = d.customUrl || ''; S.tipsSeen = !!d.tipsSeen;
+      S.customUrl = isLegacy(d.customUrl) ? '' : (d.customUrl || ''); S.tipsSeen = !!d.tipsSeen;
     } else {
       const old = JSON.parse(localStorage.getItem(OLD_STORE) || 'null'); // versión anterior: se conserva solo el inventario
       if (old) { S.counts = old.counts || {}; S.log = Array.isArray(old.log) ? old.log : []; }
@@ -1076,7 +1079,7 @@ function init() {
   });
 
   const param = new URLSearchParams(location.search).get('model');
-  if (param) S.customUrl = normalizeUrl(param);
+  if (param && !isLegacy(param)) S.customUrl = normalizeUrl(param);
   loadModel(S.customUrl || DEFAULT_MODEL).then(ok => {
     if (ok) { if (param) saveStore(); }
     else if (S.customUrl) { S.customUrl = ''; saveStore(); loadModel(DEFAULT_MODEL); }   // si el enlace propio falla, se vuelve al modelo original
