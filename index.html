@@ -12,21 +12,28 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script>try{var t=JSON.parse(localStorage.getItem("inventario-ia:v2")).cfg.theme;if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <style>
 :root{
   --bg:#f4f3ef; --surface:#ffffff; --ink:#1a1d21; --muted:#5b6670; --line:#e4e1da; --track:#d9d6cf;
-  --in:#0a8a5b; --in-soft:#e1f4ea; --out:#c2410c; --out-soft:#fdebe1; --danger:#b42318;
+  --in:#0a8a5b; --in-soft:#e1f4ea; --out:#c2410c; --out-soft:#fdebe1; --danger:#b42318; --on-accent:#ffffff;
   --accent:var(--in); --accent-soft:var(--in-soft);
   --cam:#0b0e12; --shadow:0 1px 2px rgba(20,24,28,.06),0 4px 14px rgba(20,24,28,.06);
   --r:18px;
 }
 @media (prefers-color-scheme:dark){
-  :root{
+  :root:not([data-theme="light"]){
     --bg:#101418; --surface:#181e24; --ink:#eef2f5; --muted:#9aa7b2; --line:#29323b; --track:#37424d;
-    --in:#2fb67f; --in-soft:#12332a; --out:#f08a45; --out-soft:#3b2414; --danger:#ff8a80;
-    --cam:#000; --shadow:none;
+    --in:#2fb67f; --in-soft:#12332a; --out:#f08a45; --out-soft:#3b2414; --danger:#ff8a80; --on-accent:#04140d;
+    --cam:#000; --shadow:none; color-scheme:dark;
   }
 }
+:root[data-theme="dark"]{
+  --bg:#101418; --surface:#181e24; --ink:#eef2f5; --muted:#9aa7b2; --line:#29323b; --track:#37424d;
+  --in:#2fb67f; --in-soft:#12332a; --out:#f08a45; --out-soft:#3b2414; --danger:#ff8a80; --on-accent:#04140d;
+  --cam:#000; --shadow:none; color-scheme:dark;
+}
+:root[data-theme="light"]{color-scheme:light}
 body[data-mode=out]{--accent:var(--out); --accent-soft:var(--out-soft)}
 
 *{box-sizing:border-box}
@@ -52,7 +59,7 @@ svg.i.solid{fill:currentColor; stroke:none}
 }
 .top{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:4px 0 14px}
 .brand{display:flex; align-items:center; gap:12px; min-width:0}
-.logo{flex:none; width:42px; height:42px; border-radius:13px; display:grid; place-items:center; background:var(--accent); color:#fff}
+.logo{flex:none; width:42px; height:42px; border-radius:13px; display:grid; place-items:center; background:var(--accent); color:var(--on-accent)}
 .brand h1{font-size:1.3rem; line-height:1.15; font-weight:800}
 .icon-btn{width:48px; height:48px; border-radius:14px; border:1px solid var(--line); background:var(--surface); display:grid; place-items:center}
 .screens{display:block}
@@ -68,7 +75,7 @@ svg.i.solid{fill:currentColor; stroke:none}
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; font-size:.82rem; font-weight:700; position:relative;
 }
 .tabbar button[aria-selected=true]{background:var(--accent-soft); color:var(--accent)}
-.badge{position:absolute; top:4px; left:calc(50% + 10px); min-width:22px; padding:0 6px; border-radius:11px; background:var(--accent); color:#fff; font-size:.72rem; line-height:22px; text-align:center}
+.badge{position:absolute; top:4px; left:calc(50% + 10px); min-width:22px; padding:0 6px; border-radius:11px; background:var(--accent); color:var(--on-accent); font-size:.72rem; line-height:22px; text-align:center}
 
 @media (max-width:959px){
   body[data-tab=scan] #stockScreen{display:none}
@@ -86,7 +93,7 @@ svg.i.solid{fill:currentColor; stroke:none}
   min-height:52px; padding:10px 20px; border-radius:14px; border:2px solid var(--line); background:var(--surface);
   font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; color:var(--ink);
 }
-.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .btn.danger{color:var(--danger); border-color:transparent; background:transparent; min-height:44px}
 .btn.block{width:100%}
 .btn:disabled{opacity:.5}
@@ -97,10 +104,9 @@ svg.i.solid{fill:currentColor; stroke:none}
   min-height:56px; padding:8px 10px; border-radius:16px; border:2px solid var(--line); background:var(--surface);
   font-size:1.1rem; font-weight:800; color:var(--muted);
 }
-.mode button[aria-pressed=true]{color:#fff}
+.mode button[aria-pressed=true]{color:var(--on-accent)}
 .mode button[data-mode=in][aria-pressed=true]{background:var(--in); border-color:var(--in)}
 .mode button[data-mode=out][aria-pressed=true]{background:var(--out); border-color:var(--out)}
-@media (prefers-color-scheme:dark){ .mode button[aria-pressed=true]{color:#04140d} }
 
 .viewfinder{
   position:relative; aspect-ratio:1/1; width:100%; margin:0 auto; background:var(--cam);
@@ -133,7 +139,7 @@ body[data-mode=out] .viewfinder[data-state=counted]{--mark:#ffb27a}
   flex:none; width:52px; height:52px; padding:0; border-radius:50%; border:2px solid var(--line); background:var(--bg); color:var(--ink);
   display:flex; align-items:center; justify-content:center;
 }
-.round[aria-pressed=true]{background:var(--accent); border-color:var(--accent); color:#fff}
+.round[aria-pressed=true]{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 
 .status{
   background:var(--surface); border-radius:var(--r); padding:12px 12px 0 16px; box-shadow:var(--shadow); overflow:hidden;
@@ -182,15 +188,14 @@ body[data-mode=out] .viewfinder[data-state=counted]{--mark:#ffb27a}
 .prob{display:grid; grid-template-columns:minmax(70px,32%) 1fr 44px; align-items:center; gap:8px; font-size:.85rem; padding:3px 0}
 .prob span:first-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .prob .track{height:8px; border-radius:4px; background:var(--track); overflow:hidden}
-.prob .fill{height:100%; width:0; background:var(--muted); transition:width .12s linear}
+.prob .fill{height:100%; width:0; background:var(--muted); transition:width .45s ease-out}
 .prob.top .fill{background:var(--accent)}
 .prob output{text-align:right; font-variant-numeric:tabular-nums; color:var(--muted)}
 
 /* ---------- inventario ---------- */
 .total-card{
-  background:var(--accent); color:#fff; border-radius:var(--r); padding:18px 20px; display:flex; align-items:baseline; gap:10px;
+  background:var(--accent); color:var(--on-accent); border-radius:var(--r); padding:18px 20px; display:flex; align-items:baseline; gap:10px;
 }
-@media (prefers-color-scheme:dark){ .total-card{color:#07110d} }
 .total-card strong{font-size:3rem; line-height:1; font-variant-numeric:tabular-nums}
 .total-card span{font-size:1.05rem; font-weight:600}
 .stock{list-style:none; margin:0; padding:0; display:grid; gap:10px}
@@ -256,8 +261,7 @@ dialog .sub{color:var(--muted); font-size:.95rem; margin-bottom:14px}
 .switch:checked::after{transform:translateX(22px)}
 .seg{display:grid; grid-template-columns:repeat(3,1fr); gap:6px; width:100%}
 .seg button{min-height:48px; border-radius:12px; border:2px solid var(--line); background:var(--surface); font-weight:700; font-size:.95rem}
-.seg button[aria-pressed=true]{background:var(--accent); border-color:var(--accent); color:#fff}
-@media (prefers-color-scheme:dark){ .seg button[aria-pressed=true]{color:#07110d} }
+.seg button[aria-pressed=true]{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
 .sens{display:grid; gap:8px; padding:12px 0; border-top:1px solid var(--line)}
 .sens label{font-weight:700}
 .sens small{color:var(--muted); font-size:.85rem}
@@ -392,6 +396,16 @@ dialog .foot{display:grid; gap:8px; margin-top:14px}
 <dialog id="dlgSettings" aria-labelledby="setTitle">
   <h2 id="setTitle">Ajustes</h2>
   <p class="sub">Lo normal es no tocar nada.</p>
+
+  <div class="sens" style="border-top:0; padding-top:0">
+    <label id="themeLbl">Apariencia</label>
+    <div class="seg" role="group" aria-labelledby="themeLbl">
+      <button type="button" data-theme-opt="auto" aria-pressed="true">Automática</button>
+      <button type="button" data-theme-opt="light" aria-pressed="false">Clara</button>
+      <button type="button" data-theme-opt="dark" aria-pressed="false">Oscura</button>
+    </div>
+    <small>«Automática» sigue el modo de tu teléfono.</small>
+  </div>
 
   <div class="set"><label for="optSound">Sonido al contar</label><input class="switch" type="checkbox" id="optSound" role="switch"></div>
   <div class="set"><label for="optVibrate">Vibración al contar</label><input class="switch" type="checkbox" id="optVibrate" role="switch"></div>
@@ -537,7 +551,7 @@ const COLOR_BY_NAME = [[/vital|agua/i, '#2b7de9'], [/aquarius/i, '#e8890c'], [/c
 const S = {
   model: null, labels: [], url: '', customUrl: '',
   counts: {}, log: [], tipsSeen: false, tab: 'scan',
-  cfg: { mode: 'in', sound: true, vibrate: true, sens: 'normal', facing: 'environment', bg: '', tech: false, ...SENS.normal, release: 600 },
+  cfg: { mode: 'in', sound: true, vibrate: true, sens: 'normal', facing: 'environment', bg: '', tech: false, theme: 'auto', ...SENS.normal, release: 600 },
   mirror: false, paused: false, stream: null, running: false, busy: false, lastPred: 0, raf: 0, wake: null,
 };
 const engine = new CountEngine(S.cfg);
@@ -560,8 +574,8 @@ function loadStore() {
 }
 function saveStore() {
   try {
-    const { mode, sound, vibrate, sens, facing, bg, tech } = S.cfg;
-    localStorage.setItem(STORE, JSON.stringify({ cfg: { mode, sound, vibrate, sens, facing, bg, tech }, counts: S.counts, log: S.log.slice(-500), customUrl: S.customUrl, tipsSeen: S.tipsSeen }));
+    const { mode, sound, vibrate, sens, facing, bg, tech, theme } = S.cfg;
+    localStorage.setItem(STORE, JSON.stringify({ cfg: { mode, sound, vibrate, sens, facing, bg, tech, theme }, counts: S.counts, log: S.log.slice(-500), customUrl: S.customUrl, tipsSeen: S.tipsSeen }));
   } catch (_) {}
 }
 function applySens() { Object.assign(S.cfg, SENS[S.cfg.sens] || SENS.normal); }
@@ -760,7 +774,7 @@ function exportLog() {
 let startAction = null;
 function showStart({ text, hint = '', button = '', onClick = null, busy = false }) {
   $('#vfStart').hidden = false;
-  $('#vfSpin').hidden = !busy; $('#vfIcon').hidden = busy;
+  $('#vfSpin').hidden = !busy; $('#vfIcon').toggleAttribute('hidden', busy);
   $('#vfMsg').textContent = text;
   $('#vfHint').textContent = hint; $('#vfHint').hidden = !hint;
   const b = $('#btnStart'); b.hidden = !button; b.textContent = button;
@@ -785,11 +799,20 @@ function renderStatus(r) {
 }
 function renderProbs(smooth, best) {
   if (!S.cfg.tech) return;
+  const now = performance.now(), dt = S.dispAt ? now - S.dispAt : 1000;
+  S.dispAt = now;
+  const a = 1 - Math.exp(-dt / 700);               // promedio lento, solo para mostrar
+  const d = S.disp = S.disp || {};
+  for (const k in smooth) d[k] = (d[k] ?? smooth[k]) + (smooth[k] - (d[k] ?? smooth[k])) * a;
+  if (now - (S.dispDraw || 0) < 350) return;       // se redibuja unas 3 veces por segundo
+  S.dispDraw = now;
+  let top = null, tp = -1;
+  for (const k in d) if (d[k] > tp) { tp = d[k]; top = k; }
   for (const row of $('#probs').children) {
-    const p = smooth[row.dataset.label] || 0;
+    const p = d[row.dataset.label] || 0;
     $('.fill', row).style.width = (p * 100).toFixed(0) + '%';
-    $('output', row).textContent = Math.round(p * 100) + '%';
-    row.classList.toggle('top', row.dataset.label === best);
+    $('output', row).textContent = (Math.round(p * 20) * 5) + '%';   // de 5 en 5
+    row.classList.toggle('top', row.dataset.label === top);
   }
 }
 
@@ -862,7 +885,7 @@ async function startCamera() {
     } catch (_) { $('#btnFlip').hidden = false; }
 
     S.running = true; S.paused = false; setPaused(false);
-    engine.reset();
+    engine.reset(); S.disp = null;
     $('#vfStart').hidden = true; $('#vfStatus').hidden = false; $('#camSet').hidden = false;
     renderStatus({ state: 'idle', label: null, progress: 0 });
     lockScreen();
@@ -890,7 +913,7 @@ function setPaused(p) {
   b.setAttribute('aria-pressed', String(p));
   b.setAttribute('aria-label', p ? 'Seguir contando' : 'Pausar el conteo');
   b.title = p ? 'Seguir' : 'Pausar';
-  $('#icPause').hidden = p; $('#icPlay').hidden = !p;
+  $('#icPause').toggleAttribute('hidden', p); $('#icPlay').toggleAttribute('hidden', !p);
   if (S.running) { engine.reset(); renderStatus({ state: p ? 'paused' : 'idle', label: null, progress: 0 }); }
 }
 
@@ -978,21 +1001,32 @@ function setMode(mode) {
 }
 function setSens(s) {
   S.cfg.sens = s; applySens();
-  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sens === s)));
+  document.querySelectorAll('[data-sens]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sens === s)));
   saveStore();
 }
 function applyTech() { $('#tech').hidden = !S.cfg.tech; }
+function applyTheme() {
+  const t = S.cfg.theme || 'auto', root = document.documentElement;
+  if (t === 'light' || t === 'dark') root.dataset.theme = t; else delete root.dataset.theme;
+  const dark = t === 'dark' || (t === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = dark ? '#101418' : '#f4f3ef';
+  document.querySelectorAll('[data-theme-opt]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeOpt === t)));
+}
+function setTheme(t) { S.cfg.theme = t; applyTheme(); saveStore(); }
 
 function init() {
   loadStore();
   setMode(S.cfg.mode); setSens(S.cfg.sens);
   $('#optSound').checked = S.cfg.sound; $('#optVibrate').checked = S.cfg.vibrate; $('#optTech').checked = S.cfg.tech;
-  applyTech();
+  applyTech(); applyTheme();
   renderLog(); updateCounts();
 
   document.querySelectorAll('.mode button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
   document.querySelectorAll('.tabbar button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
-  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setSens(b.dataset.sens)));
+  document.querySelectorAll('[data-sens]').forEach(b => b.addEventListener('click', () => setSens(b.dataset.sens)));
+  document.querySelectorAll('[data-theme-opt]').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.themeOpt)));
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)');
+  if (sysDark.addEventListener) sysDark.addEventListener('change', applyTheme);
   $('#pop').addEventListener('animationend', () => $('#pop').classList.remove('show'));
   $('#flash').addEventListener('animationend', () => $('#flash').classList.remove('on'));
   $('#btnStart').addEventListener('click', () => startAction && startAction());
